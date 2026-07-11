@@ -2,7 +2,7 @@ import os
 import io
 import math
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 # ponytail: Helper to load .env variables locally without external package dependencies
 def load_env():
@@ -19,8 +19,8 @@ def load_env():
 # Load environment variables
 load_env()
 
-# Initialize Flask app pointing to the public folder for static files
-app = Flask(__name__, static_folder='../public', static_url_path='')
+# Initialize Flask app using default templates and static settings
+app = Flask(__name__)
 
 # Enable CORS manually
 @app.after_request
@@ -138,10 +138,7 @@ def generate_response(system_instruction, user_prompt):
 
 @app.route("/")
 def home():
-    try:
-        return app.send_static_file("index.html")
-    except Exception:
-        return "RAG Chatbot API is running (index.html not found)."
+    return render_template("index.html")
 
 @app.route("/api/upload", methods=["POST", "OPTIONS"])
 def upload_pdf():
