@@ -19,8 +19,8 @@ def load_env():
 # Load environment variables
 load_env()
 
-# Initialize Flask app
-app = Flask(__name__)
+# Initialize Flask app pointing to the public folder for static files
+app = Flask(__name__, static_folder='../public', static_url_path='')
 
 # Enable CORS manually
 @app.after_request
@@ -138,7 +138,10 @@ def generate_response(system_instruction, user_prompt):
 
 @app.route("/")
 def home():
-    return "RAG Chatbot API is running."
+    try:
+        return app.send_static_file("index.html")
+    except Exception:
+        return "RAG Chatbot API is running (index.html not found)."
 
 @app.route("/api/upload", methods=["POST", "OPTIONS"])
 def upload_pdf():
